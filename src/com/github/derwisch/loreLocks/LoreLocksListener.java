@@ -84,15 +84,14 @@ public class LoreLocksListener implements Listener {
     public void onInventoryClick_CreateKey(InventoryClickEvent event) {
     	ItemStack currentItem = event.getCurrentItem();
     	ItemStack cursorItem = event.getCursor();
-    	
-    	if (LoreLocks.instance.IsLockPick(cursorItem)) {
-    		if (LoreLocks.instance.IsLock(currentItem)) {
-    			
-    			ItemStack key = LoreLocks.instance.CreateKey(currentItem);
-    			
-    	    	event.setCursor(key);
-    	    	event.setCancelled(true);
-        	}
+    	if (cursorItem.getAmount() == 1) {
+	    	if (LoreLocks.instance.IsLockPick(cursorItem)) {
+	    		if (LoreLocks.instance.IsLock(currentItem)) {
+	    			ItemStack key = LoreLocks.instance.CreateKey(currentItem);
+	    	    	event.setCursor(key);
+	    	    	event.setCancelled(true);
+	        	}
+	    	}
     	}
     }
 }

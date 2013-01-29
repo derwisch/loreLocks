@@ -98,7 +98,13 @@ public class LoreLocks extends JavaPlugin {
 		}
 		
 		lockMeta.setDisplayName(color + lock.LockName + ChatColor.RESET);
-		lockLore.add(ChatColor.GRAY + "Difficulty: " + lock.Difficulty + ChatColor.RESET);
+		if (lock.Difficulty == 6) {
+			lockLore.add(ChatColor.GRAY + "Unpickable" + ChatColor.RESET);
+			lockLore.add(ChatColor.GRAY + "Can only be opened" + ChatColor.RESET);
+			lockLore.add(ChatColor.GRAY + "with the right key" + ChatColor.RESET);
+		} else {
+			lockLore.add(ChatColor.GRAY + "Difficulty: " + lock.Difficulty + ChatColor.RESET);
+		}
 		lockMeta.setLore(lockLore);
 		lockStack.setItemMeta(lockMeta);
 		lockStack.setDurability(lock.LockDV);
@@ -124,6 +130,9 @@ public class LoreLocks extends JavaPlugin {
 		}
 		
 		for (int i = 1; i < 7; i++) {
+			if (i == 6 && lore.contains(ChatColor.GRAY + "Unpickable" + ChatColor.RESET)) {
+				return true;
+			}
 			if (lore.contains(ChatColor.GRAY + "Difficulty: " + i + ChatColor.RESET)) {
 				return true;
 			}
@@ -150,15 +159,26 @@ public class LoreLocks extends JavaPlugin {
 		if (!IsLock(lock)) {
 			return null;
 		}
-		
+
 		int hash = lock.hashCode();
-		String keyInfo = ChatColor.BLACK.toString() + "#" + ChatColor.MAGIC.toString() + hash + ChatColor.RESET.toString(); 
+		String keyInfo = ""; 
 		
 		ItemMeta meta = lock.getItemMeta();
 		List<String> lore = meta.getLore();
-		lore.add(keyInfo);
+		
+		for (String line : lore) {
+			if (line.startsWith(ChatColor.BLACK.toString() + "#" + ChatColor.MAGIC.toString())) {
+				keyInfo = line;
+			}
+		}
+		
+		if (keyInfo == "") {
+			keyInfo = ChatColor.BLACK.toString() + "#" + ChatColor.MAGIC.toString() + hash + ChatColor.RESET.toString();
+			lore.add(keyInfo);
+		}
 		meta.setLore(lore);
 		lock.setItemMeta(meta);
+		
 		
 		ItemStack key = new ItemStack(Material.getMaterial(Settings.KeyID));
 		key.setDurability((short)Settings.KeyDV);
@@ -211,6 +231,9 @@ public class LoreLocks extends JavaPlugin {
 		
 		List<String> lore = meta.getLore();
 		for (int i = 1; i < 7; i++) {
+			if (i == 6 && lore.contains(ChatColor.GRAY + "Unpickable" + ChatColor.RESET)) {
+				return i;
+			}
 			if (lore.contains(ChatColor.GRAY + "Difficulty: " + i + ChatColor.RESET)) {
 				return i;
 			}
