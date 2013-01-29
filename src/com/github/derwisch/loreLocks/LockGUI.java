@@ -134,6 +134,7 @@ public class LockGUI {
     		lockPicksMeta.setDisplayName(ChatColor.WHITE.toString() + lockPickCount + "x " + Settings.LockPickName + ChatColor.RESET);
     	}
     	lockPicks.setItemMeta(lockPicksMeta);
+    	lockPicks.setAmount(1);
 		return lockPicks;
 	}
 
