@@ -20,11 +20,8 @@ public class Settings {
 	public static int LockPickDV = 1;
 	public static String LockPickName = "Lock Pick";
 	public static double LockPickBreakChance = 369;
-	public static boolean EnableEXP = true;
 	
 	public static Map<String, Lock> Locks;
-	
-	public static int CurrentLockID = 0;
 	
     public static void LoadConfiguration(Configuration config) {
         try {
@@ -35,9 +32,6 @@ public class Settings {
         	LockPickDV = config.getInt("general.LockPickDV");
         	LockPickName = config.getString("general.LockPickName");
         	LockPickBreakChance = config.getDouble("general.LockPickBreakChance");
-        	EnableEXP = config.getBoolean("general.EnableEXP");
-        	
-        	CurrentLockID = config.getInt("storage.currentID");
         	
         	Set<String> lockKeys = config.getConfigurationSection("locks").getKeys(false);
         	
@@ -105,25 +99,9 @@ public class Settings {
         }
     }
     
+    @Deprecated
     public static void SaveConfiguration(Configuration config) {
-    	/*
-    	config.set("general.KeyID", KeyID);
-    	config.set("general.KeyDV", KeyDV);
-    	config.set("general.KeyName", KeyName);
-    	
-    	for (String lockKey : Locks.keySet()) {
-
-    		Lock lock = Locks.get(lockKey);
-    		
-    		config.set("locks." + lockKey + ".LockID", lock.LockID);
-    		config.set("locks." + lockKey + ".LockDV", lock.LockDV);
-    		config.set("locks." + lockKey + ".LockName", lock.LockName);
-    		config.set("locks." + lockKey + ".Difficulty", lock.Difficulty);
-    		config.set("locks." + lockKey + ".RClick", lock.RClick);
-    		config.set("locks." + lockKey + ".MClick", lock.MClick);
-    		config.set("locks." + lockKey + ".Shift", lock.Shift);
-    	}
-    	//*/
+    	//Add saving logic here when needed, not needed ATM.
     }
     
 }

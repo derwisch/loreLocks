@@ -64,8 +64,6 @@ public class LoreLocks extends JavaPlugin {
 
 	@Override
     public void onDisable() {
-		Settings.SaveConfiguration(configuration);
-		this.saveConfig();
     	getLogger().info("Disabled LoreLocks");
     }
     

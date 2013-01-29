@@ -6,7 +6,6 @@ general:
   LockPickDV: 1
   LockPickName: 'Lock Pick'
   LockPickBreakChance: 0.3
-  EnableEXP: true
 locks:
   basic1:
     LockID: 265
@@ -75,5 +74,3 @@ locks:
     RecipeIDs:
       I: 266
       B: 41
-storage:
-  currentID: 0
