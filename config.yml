@@ -1,0 +1,79 @@
+general:
+  KeyID: 369
+  KeyDV: 1
+  KeyName: 'Key'
+  LockPickID: 280
+  LockPickDV: 1
+  LockPickName: 'Lock Pick'
+  LockPickBreakChance: 0.3
+  EnableEXP: true
+locks:
+  basic1:
+    LockID: 265
+    LockDV: 1
+    LockName: 'Basic Lock'
+    Difficulty: 1
+    RecipeShape:
+    - BI
+    RecipeIDs:
+      I: 265
+      B: 42
+  basic2:
+    LockID: 265
+    LockDV: 2
+    LockName: 'Advanced Lock'
+    Difficulty: 2
+    RecipeShape:
+    - IBI
+    RecipeIDs:
+      I: 265
+      B: 42
+  basic3:
+    LockID: 265
+    LockDV: 3
+    LockName: 'Strong Lock'
+    Difficulty: 3
+    RecipeShape:
+    - ' I '
+    - IBI
+    - '   '
+    RecipeIDs:
+      I: 265
+      B: 42
+  basic4:
+    LockID: 265
+    LockDV: 4
+    LockName: 'Tough Lock'
+    Difficulty: 4
+    RecipeShape:
+    - ' I '
+    - IBI
+    - ' I '
+    RecipeIDs:
+      I: 265
+      B: 42
+  basic5:
+    LockID: 265
+    LockDV: 5
+    LockName: 'Fine Lock'
+    Difficulty: 5
+    RecipeShape:
+    - III
+    - IBI
+    RecipeIDs:
+      I: 265
+      B: 42
+  master:
+    LockID: 266
+    LockDV: 6
+    LockName: 'Masterful Lock'
+    Difficulty: 6
+    RecipeShape:
+    - III
+    - IBI
+    - III
+    RecipeIDs:
+      I: 266
+      B: 41
+storage:
+  currentID: 0

@@ -1,0 +1,8 @@
+name: LoreLocks
+main: com.github.derwisch.loreLocks.LoreLocks
+version: 1.0.0.0
+
+permissions:
+    lorelocks.bypass:
+        description: Allows to bypass chest locks
+        default: false
