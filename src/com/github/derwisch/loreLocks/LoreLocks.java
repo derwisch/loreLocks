@@ -118,6 +118,11 @@ public class LoreLocks extends JavaPlugin {
 		}
 		
 		List<String> lore = meta.getLore();
+		
+		if (lore == null) {
+			return false;
+		}
+		
 		for (int i = 1; i < 7; i++) {
 			if (lore.contains(ChatColor.GRAY + "Difficulty: " + i + ChatColor.RESET)) {
 				return true;
