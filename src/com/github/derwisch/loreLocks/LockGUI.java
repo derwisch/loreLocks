@@ -31,6 +31,7 @@ public class LockGUI {
 	public Inventory TargetInventory;
 	public Inventory LockInventory;
 	public Player Player;
+	public ItemStack Lock;
 
 	private int hashCode;
 	
@@ -51,6 +52,7 @@ public class LockGUI {
 		this.LockInventory = Bukkit.createInventory(player, 3 * 9, lockMeta.getDisplayName());
 		this.TargetInventory = inventory;
 		this.lock = lock;
+		this.Lock = lock;
 		this.difficulty = difficulty;
 
 		Random rand = new Random();
@@ -168,7 +170,8 @@ public class LockGUI {
 			currentPos++;
 			updateInventory();
 		} else {
-			if (Math.random() <= Settings.LockPickBreakChance) {
+			onFail();
+			if (Math.random() <= LoreLocks.instance.GetBreakChange(Player)) {
 				breakLockPick();
 				updatePlayerLockCounter();
 			}
@@ -180,9 +183,20 @@ public class LockGUI {
 			openPlayer = Player;
 			openedInventory = TargetInventory;
 			OpenInventory();
+			onSuccess();
 		}
 	}
 	
+	private void onFail() {
+		LoreLocks.instance.ExecuteFailEvents(this);
+		
+	}
+
+	private void onSuccess() {
+		LoreLocks.instance.ExecuteSuccessEvents(this);
+		
+	}
+
 	private static void OpenInventory() {
 		LoreLocks.server.getScheduler().scheduleSyncDelayedTask(LoreLocks.instance, new Runnable() {
     		@Override 

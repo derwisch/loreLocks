@@ -5,7 +5,9 @@ general:
   LockPickID: 280
   LockPickDV: 1
   LockPickName: 'Lock Pick'
-  LockPickBreakChance: 0.3
+  LockPickBreakChance: 0.33
+  LockPickBreakChanceRate: 0.01
+  LockPickMinBreakChance: 0.05
 locks:
   basic1:
     LockID: 265
@@ -74,3 +76,24 @@ locks:
     RecipeIDs:
       I: 266
       B: 41
+events:
+  fail1:
+    event: fail
+    permission: player.fail.kick
+    action: server-command
+    payload: 'kick <player>'
+  fail2:
+    event: fail
+    permission: shame.on.me
+    action: player-command
+    payload: 'me failed to pick a <lock>'
+  success1:
+    event: success
+    permission: winning.at.picking
+    action: player-message
+    payload: 'congrats to your success!'
+  success2:
+    event: success
+    permission: broadcast.my.win
+    action: server-message
+    payload: '<player> successfully picked a <lock>'

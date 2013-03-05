@@ -52,12 +52,16 @@ public class LoreLocksListener implements Listener {
 				player.sendMessage(ChatColor.DARK_GREEN + "You opened the chest with your key. " + ChatColor.RESET);
 			} else {
 				if (difficulty <= 5 && difficulty != -1 && !player.hasPermission(Permissions.BYPASS)) {
-	    			LockGUI lockGUI = new LockGUI(player, chest.getBlockInventory(), lock, (byte)difficulty);
-	    			lockGUI.ShowLock();
-	    			event.setCancelled(true);
+					if (player.hasPermission(Permissions.getPickPermission(difficulty))) {
+		    			LockGUI lockGUI = new LockGUI(player, chest.getInventory(), lock, (byte)difficulty);
+		    			lockGUI.ShowLock();
+		    			event.setCancelled(true);
+					} else {
+						player.sendMessage(ChatColor.DARK_RED + "You can't pick this lock!" + ChatColor.RESET);
+	        			event.setCancelled(true);
+					}
 				} else {
 					if (!player.hasPermission(Permissions.BYPASS)) {
-						
 							player.sendMessage(ChatColor.DARK_RED + "This lock can't be picked!" + ChatColor.RESET);
 		        			event.setCancelled(true);
 					} else {
@@ -89,6 +93,20 @@ public class LoreLocksListener implements Listener {
 	    		if (LoreLocks.instance.IsLock(currentItem)) {
 	    			ItemStack key = LoreLocks.instance.CreateKey(currentItem);
 	    	    	event.setCursor(key);
+	    	    	event.setCancelled(true);
+	        	}
+	    	}
+    	}
+    }
+    
+    @EventHandler
+    public void onInventoryClick_ApplyKey(InventoryClickEvent event) {
+    	ItemStack currentItem = event.getCurrentItem();
+    	ItemStack cursorItem = event.getCursor();
+    	if (cursorItem.getAmount() == 1) {
+	    	if (LoreLocks.instance.IsKey(currentItem)) {
+	    		if (LoreLocks.instance.IsLock(cursorItem)) {
+	    			LoreLocks.instance.SetSignature(cursorItem, currentItem);
 	    	    	event.setCancelled(true);
 	        	}
 	    	}

@@ -19,9 +19,12 @@ public class Settings {
 	public static int LockPickID = 369;
 	public static int LockPickDV = 1;
 	public static String LockPickName = "Lock Pick";
-	public static double LockPickBreakChance = 369;
-	
+	public static double LockPickBreakChance = 0.3d;
+	public static double LockPickBreakChanceRate = 0.01d;
+	public static double LockPickMinBreakChance = 0.05d;
+
 	public static Map<String, Lock> Locks;
+	public static Map<String, LockEvent> Events;
 	
     public static void LoadConfiguration(Configuration config) {
         try {
@@ -32,10 +35,14 @@ public class Settings {
         	LockPickDV = config.getInt("general.LockPickDV");
         	LockPickName = config.getString("general.LockPickName");
         	LockPickBreakChance = config.getDouble("general.LockPickBreakChance");
-        	
+        	LockPickBreakChanceRate = config.getDouble("general.LockPickBreakChanceRate");
+        	LockPickMinBreakChance = config.getDouble("general.LockPickMinBreakChance");
+
         	Set<String> lockKeys = config.getConfigurationSection("locks").getKeys(false);
-        	
+        	Set<String> eventKeys = config.getConfigurationSection("events").getKeys(false);
+
         	Locks = new HashMap<String, Lock>();
+        	Events = new HashMap<String, LockEvent>();
         	
         	for (String lockKey : lockKeys) {
         		int LockID = config.getInt("locks." + lockKey + ".LockID");
@@ -87,6 +94,41 @@ public class Settings {
         		lock.SetRecipe(recipe);
         		
         		Locks.put(lockKey, lock);
+        	}
+
+        	for (String eventKey : eventKeys) {
+        		String eventType = config.getString("events." + eventKey + ".event");
+        		String eventPerm = config.getString("events." + eventKey + ".permission");
+        		String actionType = config.getString("events." + eventKey + ".action");
+        		String actionLoad = config.getString("events." + eventKey + ".payload");
+        		
+        		LockEvent event = new LockEvent();
+        		
+        		if (eventType.toLowerCase().equals("fail")) {
+            		event.EventType = 1;
+        		} else if (eventType.toLowerCase().equals("success")) {
+            		event.EventType = 2;
+        		} else {
+        			//Wrong eventtype, ignore and continue with next
+        			continue;
+        		}
+        		
+        		if (actionType.toLowerCase().equals("player-message")) {
+            		event.ActionType = 1;
+        		} else if (actionType.toLowerCase().equals("server-message")) {
+            		event.ActionType = 2;
+        		} else if (actionType.toLowerCase().equals("player-command")) {
+            		event.ActionType = 3;
+        		} else if (actionType.toLowerCase().equals("server-command")) {
+            		event.ActionType = 4;
+        		} else {
+        			//Wrong eventtype, ignore and continue with next
+        			continue;
+        		}
+        		event.EventPermission = eventPerm;
+        		event.ActionPayload = actionLoad;
+        		
+        		Events.put(eventKey, event);
         	}
         	
         	

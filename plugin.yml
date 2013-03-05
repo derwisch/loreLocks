@@ -1,8 +1,32 @@
 name: LoreLocks
 main: com.github.derwisch.loreLocks.LoreLocks
-version: 1.0.0.3
+version: 1.0.1.0
 
 permissions:
     lorelocks.bypass:
         description: Allows to bypass chest locks
+        default: false
+    lorelocks.pick.*:
+        description: Allows to pick all locks
+        default: false
+        children:
+            - lorelocks.pick.1 
+            - lorelocks.pick.2 
+            - lorelocks.pick.3 
+            - lorelocks.pick.4 
+            - lorelocks.pick.5
+    lorelocks.pick.1:
+        description: Allows to pick level 1 locks
+        default: false
+    lorelocks.pick.2:
+        description: Allows to pick level 1 locks
+        default: false
+    lorelocks.pick.3:
+        description: Allows to pick level 1 locks
+        default: false
+    lorelocks.pick.4:
+        description: Allows to pick level 1 locks
+        default: false
+    lorelocks.pick.5:
+        description: Allows to pick level 1 locks
         default: false

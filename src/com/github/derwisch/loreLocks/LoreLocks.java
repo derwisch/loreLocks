@@ -1,9 +1,11 @@
 package com.github.derwisch.loreLocks;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -158,7 +160,7 @@ public class LoreLocks extends JavaPlugin {
 			return null;
 		}
 
-		int hash = lock.hashCode();
+		Date now = new Date();
 		String keyInfo = ""; 
 		
 		ItemMeta meta = lock.getItemMeta();
@@ -171,7 +173,7 @@ public class LoreLocks extends JavaPlugin {
 		}
 		
 		if (keyInfo == "") {
-			keyInfo = ChatColor.BLACK.toString() + "#" + ChatColor.MAGIC.toString() + hash + ChatColor.RESET.toString();
+			keyInfo = ChatColor.BLACK.toString() + "#" + ChatColor.MAGIC.toString() + now.getTime() + ChatColor.RESET.toString();
 			lore.add(keyInfo);
 		}
 		meta.setLore(lore);
@@ -196,10 +198,10 @@ public class LoreLocks extends JavaPlugin {
 		for (int i = 0; i < inventory.getSize(); i++) {
 			ItemStack stack = inventory.getItem(i);
 			ItemMeta stackMeta = (stack != null) ? stack.getItemMeta() : null;
-			String stackName = (stackMeta != null) ? ((stackMeta.getDisplayName() != null) ? stackMeta.getDisplayName() : "") : "";
-			String requiredStackName = ChatColor.WHITE + Settings.KeyName + ChatColor.RESET;
+			//String stackName = (stackMeta != null) ? ((stackMeta.getDisplayName() != null) ? stackMeta.getDisplayName() : "") : "";
+			//String requiredStackName = ChatColor.WHITE + Settings.KeyName + ChatColor.RESET;
 
-			if (stackName.equals(requiredStackName) && stack.getTypeId() == Settings.KeyID && stack.getDurability() == Settings.KeyDV) {
+			if (stack != null && /* stackName.equals(requiredStackName) && */stack.getTypeId() == Settings.KeyID && stack.getDurability() == Settings.KeyDV) {
 				List<String> keyLore = stackMeta.getLore();
 				List<String> lockLore = lock.getItemMeta().getLore();
 				
@@ -243,4 +245,116 @@ public class LoreLocks extends JavaPlugin {
     public void AddShapedRecipe(ShapedRecipe recipe) {
 		this.getServer().addRecipe(recipe);
     }
+
+	public void ExecuteFailEvents(LockGUI gui) {
+		Player player = gui.Player;
+		String lockName = gui.Lock.getItemMeta().getDisplayName();
+		
+		for (String eventKey : Settings.Events.keySet()) {
+			LockEvent event = Settings.Events.get(eventKey);
+			if (event.EventType == 1) {
+				if (event.EventPermission == null || event.EventPermission.equals("") || player.hasPermission(event.EventPermission)) {
+					
+					String payload = event.ActionPayload.replace("<player>", player.getDisplayName()).replaceAll("<lock>", lockName);
+					
+					switch (event.ActionType) {
+					case 1:
+						player.sendMessage(payload);
+						break;
+					case 2:
+						server.broadcastMessage(payload);
+						break;
+					case 3:
+						server.dispatchCommand(player, payload);				
+						break;
+					case 4:
+						server.dispatchCommand(Bukkit.getConsoleSender(), payload);
+						break;
+					}
+				}
+			}
+		}
+		
+	}
+
+	public void ExecuteSuccessEvents(LockGUI gui) {
+		Player player = gui.Player;
+		String lockName = gui.Lock.getItemMeta().getDisplayName();
+		
+		for (String eventKey : Settings.Events.keySet()) {
+			LockEvent event = Settings.Events.get(eventKey);
+			if (event.EventType == 2) {
+				if (event.EventPermission == null || event.EventPermission.equals("") || player.hasPermission(event.EventPermission)) {
+					
+					String payload = event.ActionPayload.replace("<player>", player.getDisplayName()).replaceAll("<lock>", lockName);
+					
+					switch (event.ActionType) {
+					case 1:
+						player.sendMessage(payload);
+						break;
+					case 2:
+						server.broadcastMessage(payload);
+						break;
+					case 3:
+						server.dispatchCommand(player, payload);				
+						break;
+					case 4:
+						server.dispatchCommand(Bukkit.getConsoleSender(), payload);
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	public double GetBreakChange(Player player) {
+		return Math.max(Settings.LockPickMinBreakChance, Settings.LockPickBreakChance - (Settings.LockPickBreakChanceRate * player.getLevel()));
+	}
+
+	public boolean IsKey(ItemStack stack) {
+
+		if (stack.getTypeId() != Settings.KeyID)
+			return false;
+		
+		if (stack.getDurability() != Settings.KeyDV)
+			return false;
+		
+		ItemMeta meta = stack.getItemMeta();
+		if (meta == null) {
+			return false;
+		}
+		
+		List<String> lore = meta.getLore();
+		
+		for (String s : lore) {
+			if (s.startsWith(ChatColor.BLACK + "#" + ChatColor.MAGIC)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public String GetKeySignature(ItemStack key) {
+		ItemMeta meta = key.getItemMeta();
+		List<String> lore = meta.getLore();
+		
+		for (String s : lore) {
+			if (s.startsWith(ChatColor.BLACK + "#" + ChatColor.MAGIC)) {
+				return s;
+			}
+		}
+		return "";
+	}
+	
+	public void SetSignature(ItemStack lock, ItemStack key) {
+		ItemMeta lockMeta = lock.getItemMeta();
+		List<String> lockLore = lockMeta.getLore();
+		String sig = GetKeySignature(key);
+		if (!lockLore.contains(sig)) {
+			lockLore.add(sig);
+		}
+		lockMeta.setLore(lockLore);
+		lock.setItemMeta(lockMeta);
+	}
 }
