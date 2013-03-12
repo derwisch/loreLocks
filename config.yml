@@ -97,3 +97,14 @@ events:
     permission: broadcast.my.win
     action: server-message
     payload: '<player> successfully picked a <lock>'
+messages:
+  level-1-perm: 'This lock is to difficult for you!'
+  level-2-perm: 'This lock is to difficult for you!'
+  level-3-perm: 'This lock is to difficult for you!'
+  level-4-perm: 'This lock is to difficult for you!'
+  level-5-perm: 'This lock is to difficult for you!'
+  unpickable-lock: 'This lock can not be picked!'
+  bypass: 'Lock bypassed.'
+  key-used: 'You opened the chest with your key.'
+  pick-needed: 'You need a <lockpick> to open this chest!'
+  pick-break: 'Your <lockpick> broke!'

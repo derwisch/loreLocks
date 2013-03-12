@@ -229,7 +229,7 @@ public class LockGUI {
 			if (stackName.equals(requiredStackName)) {
 				stack.setAmount(stack.getAmount() - 1);
 				Player.getInventory().setItem(i, stack);
-				Player.sendMessage(ChatColor.DARK_RED + "Your " + Settings.LockPickName + " broke" + ChatColor.RESET);
+				Player.sendMessage(ChatColor.DARK_RED + Settings.Messages.Pick_Break.replace("<lockpick>", Settings.LockPickName) + ChatColor.RESET);
 				
 				if (getPlayerLockPicks() == 0) {
 					Player.closeInventory();
@@ -257,7 +257,7 @@ public class LockGUI {
 			Player.openInventory(LockInventory);
 			hashCode = Player.getOpenInventory().hashCode();
 		} else {
-			Player.sendMessage(ChatColor.DARK_RED + "You need a " + Settings.LockPickName + " to open this chest!" + ChatColor.RESET);
+			Player.sendMessage(ChatColor.DARK_RED + Settings.Messages.Pick_Needed.replace("<lockpick>", Settings.LockPickName) + ChatColor.RESET);
 			GUIs.remove(this);
 		}
 	}

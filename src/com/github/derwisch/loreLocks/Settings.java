@@ -26,6 +26,38 @@ public class Settings {
 	public static Map<String, Lock> Locks;
 	public static Map<String, LockEvent> Events;
 	
+	public static class Messages
+	{
+		public static String PermissionForLevelMissing(int level) {
+			switch (level)
+			{
+			case 1:
+				return Level_1_Permission;
+			case 2:
+				return Level_2_Permission;
+			case 3:
+				return Level_3_Permission;
+			case 4:
+				return Level_4_Permission;
+			case 5:
+				return Level_5_Permission;
+			default:
+				return "This lock is to difficult for you!";
+			}
+		}
+		
+		public static String Level_1_Permission = "This lock is to difficult for you!";
+		public static String Level_2_Permission = "This lock is to difficult for you!";
+		public static String Level_3_Permission = "This lock is to difficult for you!";
+		public static String Level_4_Permission = "This lock is to difficult for you!";
+		public static String Level_5_Permission = "This lock is to difficult for you!";
+		public static String Unpickable_Lock = "This lock can't be picked!";
+		public static String Bypass = "Lock bypassed.";
+		public static String Key_Used = "You opened the chest with your key.";
+		public static String Pick_Needed = "You need a <lockpick> to open this chest!";
+		public static String Pick_Break = "Your <lockpick> broke!";
+	}
+	
     public static void LoadConfiguration(Configuration config) {
         try {
         	KeyID = config.getInt("general.KeyID");
@@ -130,8 +162,17 @@ public class Settings {
         		
         		Events.put(eventKey, event);
         	}
-        	
-        	
+
+    		Messages.Level_1_Permission = config.getString("messages.level-1-perm");
+    		Messages.Level_2_Permission = config.getString("messages.level-2-perm");
+    		Messages.Level_3_Permission = config.getString("messages.level-3-perm");
+    		Messages.Level_4_Permission = config.getString("messages.level-4-perm");
+    		Messages.Level_5_Permission = config.getString("messages.level-5-perm");
+    		Messages.Unpickable_Lock = config.getString("messages.unpickable-lock");
+    		Messages.Bypass = config.getString("messages.bypass");
+    		Messages.Key_Used = config.getString("messages.key-used");
+    		Messages.Pick_Needed = config.getString("messages.pick-needed");
+    		Messages.Pick_Break = config.getString("messages.pick-break");
         } catch (Exception e) {
         	System.out.println("[LoreLocks] Loading Settings has thrown an exception!");
         	System.out.println("[LoreLocks] A small team of well trained monkeys under");

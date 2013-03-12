@@ -49,7 +49,7 @@ public class LoreLocksListener implements Listener {
         if (LoreLocks.instance.IsLock(lock)) {
 			int difficulty = LoreLocks.instance.GetDifficulty(lock);
 			if (LoreLocks.instance.PlayerHasKey(player, lock)) {
-				player.sendMessage(ChatColor.DARK_GREEN + "You opened the chest with your key. " + ChatColor.RESET);
+				player.sendMessage(ChatColor.DARK_GREEN + Settings.Messages.Key_Used + ChatColor.RESET);
 			} else {
 				if (difficulty <= 5 && difficulty != -1 && !player.hasPermission(Permissions.BYPASS)) {
 					if (player.hasPermission(Permissions.getPickPermission(difficulty))) {
@@ -57,15 +57,15 @@ public class LoreLocksListener implements Listener {
 		    			lockGUI.ShowLock();
 		    			event.setCancelled(true);
 					} else {
-						player.sendMessage(ChatColor.DARK_RED + "You can't pick this lock!" + ChatColor.RESET);
+						player.sendMessage(ChatColor.DARK_RED + Settings.Messages.PermissionForLevelMissing(difficulty) + ChatColor.RESET);
 	        			event.setCancelled(true);
 					}
 				} else {
 					if (!player.hasPermission(Permissions.BYPASS)) {
-							player.sendMessage(ChatColor.DARK_RED + "This lock can't be picked!" + ChatColor.RESET);
+							player.sendMessage(ChatColor.DARK_RED + Settings.Messages.Unpickable_Lock + ChatColor.RESET);
 		        			event.setCancelled(true);
 					} else {
-						player.sendMessage(ChatColor.DARK_GREEN + "[LoreLocks] " + ChatColor.RESET + "Lock bypassed");
+						player.sendMessage(ChatColor.DARK_GREEN + Settings.Messages.Bypass);
 					}
 				}
 			}
