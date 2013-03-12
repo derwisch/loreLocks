@@ -93,8 +93,8 @@ public class LoreLocksListener implements Listener {
 	    		if (LoreLocks.instance.IsLock(currentItem)) {
 	    			ItemStack key = LoreLocks.instance.CreateKey(currentItem);
 	    			KeyCreateEvent keyCreateEvent = new KeyCreateEvent((Player) event.getWhoClicked(), key);
-                    LoreLocks.instance.getServer().getPluginManager().callEvent(keyCreateEvent);
-	    	    	event.setCursor(keyCreateEvent.getKey());
+	    			LoreLocks.instance.getServer().getPluginManager().callEvent(keyCreateEvent);
+	    			event.setCursor(keyCreateEvent.getKey());
 	    	    	event.setCancelled(true);
 	        	}
 	    	}
