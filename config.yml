@@ -105,6 +105,7 @@ messages:
   level-5-perm: 'This lock is to difficult for you!'
   unpickable-lock: 'This lock can not be picked!'
   bypass: 'Lock bypassed.'
-  key-used: 'You opened the chest with your key.'
+  key-used: 'You opened the lock with your key.'
   pick-needed: 'You need a <lockpick> to open this chest!'
   pick-break: 'Your <lockpick> broke!'
+  door-locked: 'You locked a door!'

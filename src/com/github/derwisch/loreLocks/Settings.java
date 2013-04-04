@@ -53,9 +53,10 @@ public class Settings {
 		public static String Level_5_Permission = "This lock is to difficult for you!";
 		public static String Unpickable_Lock = "This lock can't be picked!";
 		public static String Bypass = "Lock bypassed.";
-		public static String Key_Used = "You opened the chest with your key.";
+		public static String Key_Used = "You opened the lock with your key.";
 		public static String Pick_Needed = "You need a <lockpick> to open this chest!";
 		public static String Pick_Break = "Your <lockpick> broke!";
+		public static String Door_Locked = "You locked a door!";
 	}
 	
     public static void LoadConfiguration(Configuration config) {
@@ -173,6 +174,7 @@ public class Settings {
     		Messages.Key_Used = config.getString("messages.key-used");
     		Messages.Pick_Needed = config.getString("messages.pick-needed");
     		Messages.Pick_Break = config.getString("messages.pick-break");
+    		Messages.Door_Locked = config.getString("messages.door-locked");
         } catch (Exception e) {
         	System.out.println("[LoreLocks] Loading Settings has thrown an exception!");
         	System.out.println("[LoreLocks] A small team of well trained monkeys under");

@@ -13,6 +13,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class LockGUI {
 	
+	public static enum LockType {
+		CHEST,
+		DOOR
+	}
+	
 	public static ArrayList<LockGUI> GUIs = new ArrayList<LockGUI>();
 
 	private ItemStack borderFiller; 
@@ -28,11 +33,13 @@ public class LockGUI {
 	public static final String BORDER_FILLER_TITLE = ChatColor.WHITE + "   " + ChatColor.RESET;
 	public static final String LOCK_CYLINDER_TITLE = ChatColor.WHITE + "Lock Cylinder" + ChatColor.RESET;
 	
+	public LockedDoor TargetDoor;
 	public Inventory TargetInventory;
 	public Inventory LockInventory;
 	public Player Player;
 	public ItemStack Lock;
-
+	public LockType Type;
+	
 	private int hashCode;
 	
 	public static LockGUI GetGUI(int hash) {
@@ -54,6 +61,38 @@ public class LockGUI {
 		this.lock = lock;
 		this.Lock = lock;
 		this.difficulty = difficulty;
+		this.Type = LockType.CHEST;
+
+		Random rand = new Random();
+		
+		for (int i = 0; i < difficulty + 2; i++) {
+    		lockAppeareance[i] = rand.nextInt(1000) % 2;
+    	}
+
+		for (int i = 0; i < difficulty + 2; i++) {
+			int i2 = rand.nextInt(difficulty + 2) + 1;
+			while (lockCylinders.contains(i2)) {
+				i2 = rand.nextInt(difficulty + 2) + 1;
+			} 
+			lockCylinders.add(i2);
+    	}
+		
+		updateInventory();
+		
+		GUIs.add(this);
+	}
+	
+	public LockGUI(Player player, LockedDoor door, ItemStack lock, byte difficulty) {
+		
+		ItemMeta lockMeta = lock.getItemMeta();
+		
+		this.Player = player;
+		this.LockInventory = Bukkit.createInventory(player, 3 * 9, lockMeta.getDisplayName());
+		this.TargetDoor = door;
+		this.lock = lock;
+		this.Lock = lock;
+		this.difficulty = difficulty;
+		this.Type = LockType.DOOR;
 
 		Random rand = new Random();
 		
@@ -182,7 +221,14 @@ public class LockGUI {
 		if (currentPos == difficulty + 2) {
 			openPlayer = Player;
 			openedInventory = TargetInventory;
-			OpenInventory();
+			if (Type == LockType.CHEST) {
+				Player.closeInventory();
+				OpenInventory();
+			}
+			else if (Type == LockType.DOOR) {
+				Player.closeInventory();
+				TargetDoor.OpenDoor();
+			}
 			onSuccess();
 		}
 	}
