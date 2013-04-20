@@ -1,0 +1,164 @@
+general:
+  KeyID: 369
+  KeyDV: 1
+  KeyName: 'Key'
+  LockPickID: 280
+  LockPickDV: 1
+  LockPickName: 'Lock Pick'
+  LockPickBreakChance: 0.33
+  LockPickBreakChanceRate: 0.01
+  LockPickMinBreakChance: 0.05
+  LockPickRecipeShape:
+  - 'GI'
+  LockPickRecipeIDs:
+    G: 266
+    I: 265
+  EnableExplosionProtection: false
+  EnableHopperProtection: false
+  EnableZombieProtection: false
+  TrapText: 'Trap'
+traps:
+  damage1:
+    TrapID: 318
+    TrapDV: 1
+    TrapName: 'Chest Trap'
+    Type: Damage
+    Power: 2
+    Uses: 10
+    RecipeShape:
+    - ' A '
+    - 'AFA'
+    - ' A '
+    RecipeIDs:
+      F: 318
+      A: 262
+  explosive1:
+    TrapID: 318
+    TrapDV: 1
+    TrapName: 'Explosive Trap'
+    Type: Explosive
+    Power: 2
+    Uses: 1
+    RecipeShape:
+    - ' T '
+    - 'TFT'
+    - ' T '
+    RecipeIDs:
+      F: 318
+      T: 46
+  poison1:
+    TrapID: 318
+    TrapDV: 1
+    TrapName: 'Poison Gas Trap'
+    Type: Poison
+    Power: 5
+    Uses: 1
+    RecipeShape:
+    - ' P '
+    - 'EFE'
+    - ' P '
+    RecipeIDs:
+      F: 318
+      E: 375
+      P: 394
+locks:
+  basic1:
+    LockID: 265
+    LockDV: 1
+    LockName: 'Basic Lock'
+    Difficulty: 1
+    RecipeShape:
+    - BI
+    RecipeIDs:
+      I: 265
+      B: 42
+  basic2:
+    LockID: 265
+    LockDV: 2
+    LockName: 'Advanced Lock'
+    Difficulty: 2
+    RecipeShape:
+    - IBI
+    RecipeIDs:
+      I: 265
+      B: 42
+  basic3:
+    LockID: 265
+    LockDV: 3
+    LockName: 'Strong Lock'
+    Difficulty: 3
+    RecipeShape:
+    - ' I '
+    - IBI
+    - '   '
+    RecipeIDs:
+      I: 265
+      B: 42
+  basic4:
+    LockID: 265
+    LockDV: 4
+    LockName: 'Tough Lock'
+    Difficulty: 4
+    RecipeShape:
+    - ' I '
+    - IBI
+    - ' I '
+    RecipeIDs:
+      I: 265
+      B: 42
+  basic5:
+    LockID: 265
+    LockDV: 5
+    LockName: 'Fine Lock'
+    Difficulty: 5
+    RecipeShape:
+    - III
+    - IBI
+    RecipeIDs:
+      I: 265
+      B: 42
+  master:
+    LockID: 266
+    LockDV: 6
+    LockName: 'Masterful Lock'
+    Difficulty: 6
+    RecipeShape:
+    - III
+    - IBI
+    - III
+    RecipeIDs:
+      I: 266
+      B: 41
+events:
+  fail1:
+    event: fail
+    permission: player.fail.kick
+    action: server-command
+    payload: 'kick <player>'
+  fail2:
+    event: fail
+    permission: shame.on.me
+    action: player-command
+    payload: 'me failed to pick a <lock>'
+  success1:
+    event: success
+    permission: winning.at.picking
+    action: player-message
+    payload: 'congrats to your success!'
+  success2:
+    event: success
+    permission: broadcast.my.win
+    action: server-message
+    payload: '<player> successfully picked a <lock>'
+messages:
+  level-1-perm: 'This lock is to difficult for you!'
+  level-2-perm: 'This lock is to difficult for you!'
+  level-3-perm: 'This lock is to difficult for you!'
+  level-4-perm: 'This lock is to difficult for you!'
+  level-5-perm: 'This lock is to difficult for you!'
+  unpickable-lock: 'This lock can not be picked!'
+  bypass: 'Lock bypassed.'
+  key-used: 'You opened the lock with your key.'
+  pick-needed: 'You need a <lockpick> to open this chest!'
+  pick-break: 'Your <lockpick> broke!'
+  door-locked: 'You locked a door!'
