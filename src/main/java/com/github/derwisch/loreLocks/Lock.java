@@ -20,7 +20,7 @@ public class Lock {
 	public void SetRecipe(ShapedRecipe rec) {
 		if (rec != null) {
 			Recipe = rec;
-			LoreLocks.instance.AddShapedRecipe(rec);
+			LoreLocks.instance.addShapedRecipe(rec);
 		}
 	}
 	

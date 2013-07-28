@@ -34,7 +34,7 @@ public class ChestTrap {
 	public void SetRecipe(ShapedRecipe rec) {
 		if (rec != null) {
 			recipe = rec;
-			LoreLocks.instance.AddShapedRecipe(rec);
+			LoreLocks.instance.addShapedRecipe(rec);
 		}
 	}
 

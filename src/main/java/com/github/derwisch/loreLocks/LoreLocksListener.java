@@ -19,9 +19,11 @@ import org.bukkit.event.entity.EntityBreakDoorEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -63,9 +65,9 @@ public class LoreLocksListener implements Listener {
         if (lockLore == null)
         	return;
         
-        if (LoreLocks.instance.IsLock(lock)) {
-			int difficulty = LoreLocks.instance.GetDifficulty(lock);
-			if (LoreLocks.instance.PlayerHasKey(player, lock)) {
+        if (LoreLocks.instance.isLock(lock)) {
+			int difficulty = LoreLocks.instance.getDifficulty(lock);
+			if (LoreLocks.instance.playerHasKey(player, lock)) {
 				player.sendMessage(ChatColor.DARK_GREEN + Settings.Messages.Key_Used + ChatColor.RESET);
 			} else {
 				if (difficulty <= 5 && difficulty != -1 && !player.hasPermission(Permissions.BYPASS)) {
@@ -106,7 +108,7 @@ public class LoreLocksListener implements Listener {
         if (!LockedDoor.isValid(interactedBlock.getType()))
         	return;
         
-        if (!LoreLocks.instance.IsLockedDoor(interactedBlock.getLocation()))
+        if (!LoreLocks.instance.isDoorLocked(interactedBlock.getLocation()))
         	return;
         
         if (LoreLocks.instance.isDoorOpen(interactedBlock))
@@ -133,9 +135,9 @@ public class LoreLocksListener implements Listener {
         if (lockLore == null)
         	return;
         
-        if (LoreLocks.instance.IsLock(lock)) {
-			int difficulty = LoreLocks.instance.GetDifficulty(lock);
-			if (LoreLocks.instance.PlayerHasKey(player, lock)) {
+        if (LoreLocks.instance.isLock(lock)) {
+			int difficulty = LoreLocks.instance.getDifficulty(lock);
+			if (LoreLocks.instance.playerHasKey(player, lock)) {
 				player.sendMessage(ChatColor.DARK_GREEN + Settings.Messages.Key_Used + ChatColor.RESET);
 			} else {
 				if (difficulty <= 5 && difficulty != -1 && !player.hasPermission(Permissions.BYPASS)) {
@@ -174,12 +176,12 @@ public class LoreLocksListener implements Listener {
         if (!LockedDoor.isValid(interactedBlock.getType()))
         	return;
 
-        if (LoreLocks.instance.IsLockedDoor(blockLoc))
+        if (LoreLocks.instance.isDoorLocked(blockLoc))
         	return;
         
         ItemStack itemInHand = player.getItemInHand();
         
-        if (!LoreLocks.instance.IsLock(itemInHand))
+        if (!LoreLocks.instance.isLock(itemInHand))
         	return;
 
     	if (itemInHand.getAmount() > 1)
@@ -219,7 +221,7 @@ public class LoreLocksListener implements Listener {
         if (!LockedDoor.isValid(interactedBlock.getType()))
         	return;
         
-        if (!LoreLocks.instance.IsLockedDoor(interactedBlock.getLocation()))
+        if (!LoreLocks.instance.isDoorLocked(interactedBlock.getLocation()))
         	return;
         
         LockedDoor door = LockedDoor.GetAt(interactedBlock.getLocation());
@@ -234,20 +236,21 @@ public class LoreLocksListener implements Listener {
     	
     	if (gui != null) {
     		event.setCancelled(true);
-    		if (event.getRawSlot() > 9 && event.getRawSlot() < (12 + LoreLocks.instance.GetDifficulty(gui.Lock)) && event.getSlot() != -999) {
+    		if (event.getRawSlot() > 9 && event.getRawSlot() < (12 + LoreLocks.instance.getDifficulty(gui.Lock)) && event.getSlot() != -999) {
 	    		gui.Click(event.getSlot(), event.isRightClick(), event.isShiftClick());
 	    	}
     	}
     }
     
-    @EventHandler
+    @SuppressWarnings("deprecation")
+	@EventHandler
     public void onInventoryClick_CreateKey(InventoryClickEvent event) {
     	ItemStack currentItem = event.getCurrentItem();
     	ItemStack cursorItem = event.getCursor();
     	if (cursorItem.getAmount() == 1) {
-	    	if (LoreLocks.instance.IsLockPick(cursorItem)) {
-	    		if (LoreLocks.instance.IsLock(currentItem)) {
-	    			ItemStack key = LoreLocks.instance.CreateKey(currentItem);
+	    	if (LoreLocks.instance.isLockPick(cursorItem)) {
+	    		if (LoreLocks.instance.isLock(currentItem)) {
+	    			ItemStack key = LoreLocks.instance.createKey(currentItem);
 	    			KeyCreateEvent keyCreateEvent = new KeyCreateEvent((Player) event.getWhoClicked(), key);
 	    			LoreLocks.instance.getServer().getPluginManager().callEvent(keyCreateEvent);
 	    			event.setCursor(keyCreateEvent.getKey());
@@ -258,20 +261,40 @@ public class LoreLocksListener implements Listener {
     }
     
     @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+    	if (event.getInventory().getHolder() instanceof Chest) {
+    		Location loc = ((Chest)event.getInventory().getHolder()).getLocation();
+    		ItemStack lock = LoreLocks.instance.HiddenInventoryLocks.get(loc);
+    		ItemStack trap = LoreLocks.instance.HiddenInventoryTraps.get(loc);
+    		if (lock != null) {
+    			if (event.getInventory().getItem(0) != null)
+    				loc.getWorld().dropItem(loc, event.getInventory().getItem(0));
+    			event.getInventory().setItem(0, lock);	
+    		}
+    		if (trap != null) {
+    			if (event.getInventory().getItem(1) != null)
+    				loc.getWorld().dropItem(loc, event.getInventory().getItem(1));
+    			event.getInventory().setItem(1, trap);	
+    		}
+    	}
+    }
+    
+    @EventHandler
     public void onInventoryClick_ApplyKey(InventoryClickEvent event) {
     	ItemStack currentItem = event.getCurrentItem();
     	ItemStack cursorItem = event.getCursor();
     	if (cursorItem.getAmount() == 1) {
-	    	if (LoreLocks.instance.IsKey(currentItem)) {
-	    		if (LoreLocks.instance.IsLock(cursorItem)) {
-	    			LoreLocks.instance.SetSignature(cursorItem, currentItem);
+	    	if (LoreLocks.instance.isKey(currentItem)) {
+	    		if (LoreLocks.instance.isLock(cursorItem)) {
+	    			LoreLocks.instance.setKeySignature(cursorItem, currentItem);
 	    	    	event.setCancelled(true);
 	        	}
 	    	}
     	}
     }
     
-    @EventHandler
+    @SuppressWarnings("deprecation")
+	@EventHandler
     public void onInventoryClick_NameKeyPrepare(InventoryClickEvent event) {
     	if (event.getInventory().getType() == InventoryType.ANVIL) {
     		if (event.getSlotType() == SlotType.CRAFTING) {
@@ -279,7 +302,7 @@ public class LoreLocksListener implements Listener {
         		ItemStack stackCursor = event.getCursor(); 
         		ItemStack stackCurrent = event.getCurrentItem(); 
         		
-        		if (LoreLocks.instance.IsKey(stackCursor)) {
+        		if (LoreLocks.instance.isKey(stackCursor)) {
         			ItemMeta stackMeta = stackCursor.getItemMeta();
         			String newName = stackMeta.getDisplayName();
         			newName = newName.replace(ChatColor.WHITE.toString(), "");
@@ -292,7 +315,7 @@ public class LoreLocksListener implements Listener {
         			return;
         		}
         		
-        		if (LoreLocks.instance.IsKey(stackCurrent)) {
+        		if (LoreLocks.instance.isKey(stackCurrent)) {
         			ItemMeta stackMeta = stackCurrent.getItemMeta();
         			String newName = stackMeta.getDisplayName();
         			newName = ChatColor.WHITE + newName + ChatColor.RESET;
@@ -307,14 +330,15 @@ public class LoreLocksListener implements Listener {
     	}
     }
     
-    @EventHandler
+    @SuppressWarnings("deprecation")
+	@EventHandler
     public void onInventoryClick_NameKeyResult(InventoryClickEvent event) {
     	if (event.getInventory().getType() == InventoryType.ANVIL) {
     		if (event.getSlotType() == SlotType.RESULT) {
         		
         		ItemStack stack = event.getCurrentItem(); 
 
-        		if (LoreLocks.instance.IsKey(stack)) {
+        		if (LoreLocks.instance.isKey(stack)) {
         			ItemMeta stackMeta = stack.getItemMeta();
         			String newName = stackMeta.getDisplayName();
         			newName = ChatColor.WHITE + newName + ChatColor.RESET;
@@ -337,9 +361,9 @@ public class LoreLocksListener implements Listener {
 	    	ItemStack[] srcInvContents = srcInv.getContents(); 
 	    	ItemStack movedItem = event.getItem();
 	    	
-	    	if (srcInvContents.length > 0 && srcInvContents[0] != null && LoreLocks.instance.IsLock(srcInvContents[0])) {
+	    	if (srcInvContents.length > 0 && srcInvContents[0] != null && LoreLocks.instance.isLock(srcInvContents[0])) {
 	    		event.setCancelled(true);	
-	    	} else if (movedItem != null && LoreLocks.instance.IsLock(movedItem)) {
+	    	} else if (movedItem != null && LoreLocks.instance.isLock(movedItem)) {
 	    		event.setCancelled(true);
 	    	}    	
     	}
@@ -364,7 +388,7 @@ public class LoreLocksListener implements Listener {
 	    		Block block = blocks.next();
 	
 	    		if (supportedLockedContainerBlocks.contains(block.getType())) {
-	    			if (LoreLocks.instance.IsLock(((InventoryHolder)block.getState()).getInventory().getItem(0))) {
+	    			if (LoreLocks.instance.isLock(((InventoryHolder)block.getState()).getInventory().getItem(0))) {
 	    	    		blocks.remove();
 	    			}
 	    		}
@@ -389,7 +413,7 @@ public class LoreLocksListener implements Listener {
 	        if (event.isCancelled())
 	        	return;
 
-	        if (!LoreLocks.instance.IsLockedDoor(event.getBlock().getLocation()))
+	        if (!LoreLocks.instance.isDoorLocked(event.getBlock().getLocation()))
 	        	return;
 	        
 	        LockedDoor door = LockedDoor.GetAt(event.getBlock().getLocation());
@@ -417,4 +441,18 @@ public class LoreLocksListener implements Listener {
     	}
 		event.getEntity().setMetadata("LockPickDeath", new FixedMetadataValue(LoreLocks.instance, false));
     }
+
+	@EventHandler
+	public void onPlayerCraft(PrepareItemCraftEvent event) {
+		String permission = LoreLocks.instance.CraftingPermissions.get(event.getRecipe().getResult().toString());
+
+		if (permission == null)
+			return;
+		
+		if (permission.equals("")) 
+			return;
+		
+		if (!event.getView().getPlayer().hasPermission(permission))
+			event.getInventory().setResult(null);
+	}
 }

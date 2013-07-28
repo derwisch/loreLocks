@@ -25,10 +25,13 @@ public class Settings {
 	public static double LockPickBreakChance = 0.3d;
 	public static double LockPickBreakChanceRate = 0.01d;
 	public static double LockPickMinBreakChance = 0.05d;
+	public static String LockPickPermission = "";
 	public static boolean EnableExplosionProtection = false;
 	public static boolean EnableHopperProtection = false;
 	public static boolean EnableZombieProtection = false;
 	public static String TrapText = "Trap";
+	public static boolean HideLocks = false;
+	public static boolean HideTraps = false;
 
 	public static Map<String, Lock> Locks;
 	public static Map<String, ChestTrap> Traps;
@@ -82,7 +85,11 @@ public class Settings {
         	EnableHopperProtection = config.getBoolean("general.EnableHopperProtection");
         	EnableZombieProtection = config.getBoolean("general.EnableZombieProtection");
         	TrapText = config.getString("general.TrapText");
+        	HideLocks = config.getBoolean("general.HideLocks");
+        	HideTraps = config.getBoolean("general.HideTraps");
 
+        	LockPickPermission = config.getString("general.LockPickPermission");
+        	
         	Set<String> lockKeys = config.getConfigurationSection("locks").getKeys(false);
         	Set<String> trapKeys = config.getConfigurationSection("traps").getKeys(false);
         	Set<String> eventKeys = config.getConfigurationSection("events").getKeys(false);
@@ -138,7 +145,10 @@ public class Settings {
         		LockPickRecipe = LockPickRecipe.setIngredient(c, Material.getMaterial(matID));
     		}
 
-    		LoreLocks.instance.AddShapedRecipe(LockPickRecipe);
+    		if (!LockPickPermission.equals(null) && !LockPickPermission.equals(""))
+    			LoreLocks.instance.CraftingPermissions.put(LockPickRecipe.getResult().toString(), LockPickPermission);
+    		
+    		LoreLocks.instance.addShapedRecipe(LockPickRecipe);
     		LoreLocks.instance.LockPickRecipe = LockPickRecipe;
     		
     		//====================================================================//
@@ -148,6 +158,9 @@ public class Settings {
         		short LockDV = (short)config.getInt("locks." + lockKey + ".LockDV");
         		String LockName = config.getString("locks." + lockKey + ".LockName");
         		byte Difficulty = (byte)Math.max(Math.min(config.getInt("locks." + lockKey + ".Difficulty"), 6), 1);
+
+        		String LockPermission = config.getString("locks." + lockKey + ".Permission");
+        		
         		
         		List<String> RecipeShape = config.getStringList("locks." + lockKey + ".RecipeShape");
         		
@@ -163,7 +176,9 @@ public class Settings {
         		}
 
         		Lock lock = new Lock(LockID, LockDV, LockName, Difficulty);
-        		ShapedRecipe recipe = new ShapedRecipe(LoreLocks.instance.FactoryLock(lock));
+        		ShapedRecipe recipe = new ShapedRecipe(LoreLocks.instance.factoryLock(lock));
+        		
+        		
         		
         		String[] shape = new String[RecipeShape.size()];
 
@@ -192,6 +207,9 @@ public class Settings {
         		
         		lock.SetRecipe(recipe);
         		
+        		if (!LockPermission.equals(null) && !LockPermission.equals(""))
+        			LoreLocks.instance.CraftingPermissions.put(recipe.getResult().toString(), LockPermission);
+        		
         		Locks.put(lockKey, lock);
         	}
         	LoreLocks.logger.info("Loaded " + lockKeys.size() + " locks.");
@@ -205,6 +223,8 @@ public class Settings {
         		String Type = config.getString("traps." + trapKey + ".Type");
         		byte Power = (byte)config.getInt("traps." + trapKey + ".Power");
         		byte Uses = (byte)config.getInt("traps." + trapKey + ".Uses");
+        		
+        		String TrapPermission = config.getString("traps." + trapKey + ".Permission");
         		
         		List<String> RecipeShape = config.getStringList("traps." + trapKey + ".RecipeShape");
         		
@@ -260,6 +280,9 @@ public class Settings {
         		}
         		
         		trap.SetRecipe(recipe);
+
+        		if (!TrapPermission.equals(null) && !TrapPermission.equals(""))
+        			LoreLocks.instance.CraftingPermissions.put(recipe.getResult().toString(), TrapPermission);
         		
         		Traps.put(trapKey, trap);
         	}

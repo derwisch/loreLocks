@@ -8,6 +8,7 @@ general:
   LockPickBreakChance: 0.33
   LockPickBreakChanceRate: 0.01
   LockPickMinBreakChance: 0.05
+  LockPickPermission: ''
   LockPickRecipeShape:
   - 'GI'
   LockPickRecipeIDs:
@@ -17,6 +18,8 @@ general:
   EnableHopperProtection: false
   EnableZombieProtection: false
   TrapText: 'Trap'
+  HideLocks: false
+  HideTraps: false
 traps:
   damage1:
     TrapID: 318
@@ -25,6 +28,7 @@ traps:
     Type: Damage
     Power: 2
     Uses: 10
+    Permission: ''
     RecipeShape:
     - ' A '
     - 'AFA'
@@ -39,6 +43,7 @@ traps:
     Type: Explosive
     Power: 2
     Uses: 1
+    Permission: ''
     RecipeShape:
     - ' T '
     - 'TFT'
@@ -53,6 +58,7 @@ traps:
     Type: Poison
     Power: 5
     Uses: 1
+    Permission: ''
     RecipeShape:
     - ' P '
     - 'EFE'
@@ -67,6 +73,7 @@ locks:
     LockDV: 1
     LockName: 'Basic Lock'
     Difficulty: 1
+    Permission: ''
     RecipeShape:
     - BI
     RecipeIDs:
@@ -77,6 +84,7 @@ locks:
     LockDV: 2
     LockName: 'Advanced Lock'
     Difficulty: 2
+    Permission: ''
     RecipeShape:
     - IBI
     RecipeIDs:
@@ -87,6 +95,7 @@ locks:
     LockDV: 3
     LockName: 'Strong Lock'
     Difficulty: 3
+    Permission: ''
     RecipeShape:
     - ' I '
     - IBI
@@ -99,6 +108,7 @@ locks:
     LockDV: 4
     LockName: 'Tough Lock'
     Difficulty: 4
+    Permission: ''
     RecipeShape:
     - ' I '
     - IBI
@@ -111,6 +121,7 @@ locks:
     LockDV: 5
     LockName: 'Fine Lock'
     Difficulty: 5
+    Permission: ''
     RecipeShape:
     - III
     - IBI
@@ -122,6 +133,7 @@ locks:
     LockDV: 6
     LockName: 'Masterful Lock'
     Difficulty: 6
+    Permission: ''
     RecipeShape:
     - III
     - IBI

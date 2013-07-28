@@ -2,7 +2,9 @@ package com.github.derwisch.loreLocks;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -29,6 +31,10 @@ public class LoreLocks extends JavaPlugin {
 	
 	private LoreLocksListener listener;
 	private FileConfiguration configuration;
+
+	public Map<Location, ItemStack> HiddenInventoryLocks = new HashMap<Location, ItemStack>();
+	public Map<Location, ItemStack> HiddenInventoryTraps = new HashMap<Location, ItemStack>();
+	public Map<String, String> CraftingPermissions = new HashMap<String, String>();
 	
     @Override
     public void onEnable() {
@@ -57,7 +63,7 @@ public class LoreLocks extends JavaPlugin {
     	logger.info("Disabled " + this.getDescription().getName() + " v" + this.getDescription().getVersion());
     }
     
-	public ItemStack FactoryLock(Lock lock) {
+	public ItemStack factoryLock(Lock lock) {
 		ItemStack lockStack = new ItemStack(Material.getMaterial(lock.LockID));
 		ItemMeta lockMeta = lockStack.getItemMeta();
 		ArrayList<String> lockLore = new ArrayList<String>();
@@ -100,7 +106,7 @@ public class LoreLocks extends JavaPlugin {
 		return lockStack;
 	}
 	
-	public boolean IsLock(ItemStack stack) {
+	public boolean isLock(ItemStack stack) {
 		ItemMeta meta = stack.getItemMeta();
 		if (meta == null) {
 			return false;
@@ -142,7 +148,7 @@ public class LoreLocks extends JavaPlugin {
 		}
 	}
 	
-	public boolean IsLockedDoor(Location loc) {
+	public boolean isDoorLocked(Location loc) {
 		for (LockedDoor door : LockedDoor.LockedDoors) {
 			if (door.isAt(loc)) {
 				return true;
@@ -151,7 +157,7 @@ public class LoreLocks extends JavaPlugin {
 		return false;
 	}
 	
-	public boolean IsLockPick(ItemStack stack) {
+	public boolean isLockPick(ItemStack stack) {
 		ItemMeta meta = stack.getItemMeta();
 		if (meta == null) {
 			return false;
@@ -165,8 +171,17 @@ public class LoreLocks extends JavaPlugin {
 		return displayName.equals(ChatColor.WHITE + Settings.LockPickName + ChatColor.RESET);
 	}
 	
-	public ItemStack CreateKey(ItemStack lock) {
-		if (!IsLock(lock)) {
+	public boolean isTrap(ItemStack stack) {
+		try {
+			return ChestTrap.TrapIdentifier.equals(stack.getItemMeta().getLore().get(0));
+		}
+		catch (Exception ex) {
+			return false;
+		}
+	}
+	
+	public ItemStack createKey(ItemStack lock) {
+		if (!isLock(lock)) {
 			return null;
 		}
 
@@ -202,7 +217,7 @@ public class LoreLocks extends JavaPlugin {
 		return key;
 	}
 	
-	public boolean PlayerHasKey(Player player, ItemStack lock) {
+	public boolean playerHasKey(Player player, ItemStack lock) {
 		Inventory inventory = player.getInventory();
 
 		for (int i = 0; i < inventory.getSize(); i++) {
@@ -228,7 +243,7 @@ public class LoreLocks extends JavaPlugin {
 		return false;
 	}
 
-	public int GetDifficulty(ItemStack lock) {
+	public int getDifficulty(ItemStack lock) {
 		ItemMeta meta = lock.getItemMeta();
 		if (meta == null) {
 			return -1;
@@ -252,11 +267,11 @@ public class LoreLocks extends JavaPlugin {
 		return -1;
 	}
 	
-    public void AddShapedRecipe(ShapedRecipe recipe) {
+    public void addShapedRecipe(ShapedRecipe recipe) {
     	LoreLocks.server.addRecipe(recipe);
     }
 
-	public void ExecuteFailEvents(LockGUI gui) {
+	public void executeFailEvents(LockGUI gui) {
 		Player player = gui.Player;
 		String lockName = gui.Lock.getItemMeta().getDisplayName();
 		
@@ -287,7 +302,7 @@ public class LoreLocks extends JavaPlugin {
 		
 	}
 
-	public void ExecuteSuccessEvents(LockGUI gui) {
+	public void executeSuccessEvents(LockGUI gui) {
 		Player player = gui.Player;
 		String lockName = gui.Lock.getItemMeta().getDisplayName();
 		
@@ -317,11 +332,11 @@ public class LoreLocks extends JavaPlugin {
 		}
 	}
 	
-	public double GetBreakChange(Player player) {
+	public double getBreakChange(Player player) {
 		return Math.max(Settings.LockPickMinBreakChance, Settings.LockPickBreakChance - (Settings.LockPickBreakChanceRate * player.getLevel()));
 	}
 
-	public boolean IsKey(ItemStack stack) {
+	public boolean isKey(ItemStack stack) {
 
 		if (stack == null)
 			return false;
@@ -348,7 +363,7 @@ public class LoreLocks extends JavaPlugin {
 		return false;
 	}
 	
-	public String GetKeySignature(ItemStack key) {
+	public String getKeySignature(ItemStack key) {
 		ItemMeta meta = key.getItemMeta();
 		List<String> lore = meta.getLore();
 		
@@ -360,10 +375,10 @@ public class LoreLocks extends JavaPlugin {
 		return "";
 	}
 	
-	public void SetSignature(ItemStack lock, ItemStack key) {
+	public void setKeySignature(ItemStack lock, ItemStack key) {
 		ItemMeta lockMeta = lock.getItemMeta();
 		List<String> lockLore = lockMeta.getLore();
-		String sig = GetKeySignature(key);
+		String sig = getKeySignature(key);
 		if (!lockLore.contains(sig)) {
 			lockLore.add(sig);
 		}

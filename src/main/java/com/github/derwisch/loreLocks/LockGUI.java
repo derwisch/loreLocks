@@ -6,6 +6,7 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -210,7 +211,7 @@ public class LockGUI {
 			updateInventory();
 		} else {
 			onFail();
-			if (Math.random() <= LoreLocks.instance.GetBreakChange(Player)) {
+			if (Math.random() <= LoreLocks.instance.getBreakChange(Player)) {
 				breakLockPick();
 				updatePlayerLockCounter();
 			}
@@ -221,6 +222,21 @@ public class LockGUI {
 		if (currentPos == difficulty + 2) {
 			openPlayer = Player;
 			openedInventory = TargetInventory;
+			
+			if (Settings.HideLocks) {
+				if (TargetInventory.getHolder() instanceof Chest) {
+					LoreLocks.instance.HiddenInventoryLocks.put(((Chest)TargetInventory.getHolder()).getLocation(), TargetInventory.getItem(0));
+					openedInventory.setItem(0, null);
+				}
+			}
+
+			if (Settings.HideTraps && LoreLocks.instance.isTrap(openedInventory.getItem(1))) {
+				if (TargetInventory.getHolder() instanceof Chest) {
+					LoreLocks.instance.HiddenInventoryTraps.put(((Chest)TargetInventory.getHolder()).getLocation(), TargetInventory.getItem(1));
+					openedInventory.setItem(1, null);
+				}
+			}
+			
 			if (Type == LockType.CHEST) {
 				Player.closeInventory();
 				OpenInventory();
@@ -234,10 +250,10 @@ public class LockGUI {
 	}
 	
 	private void onFail() {
-		LoreLocks.instance.ExecuteFailEvents(this);
+		LoreLocks.instance.executeFailEvents(this);
 		try {
 			ItemStack trap = TargetInventory.getItem(1);
-			if (ChestTrap.isTrap(trap))
+			if (LoreLocks.instance.isTrap(trap))
 				TargetInventory.setItem(1, ChestTrap.setTrapOff(Player, trap));
 		}
 		catch (Exception ex) {
@@ -246,7 +262,7 @@ public class LockGUI {
 	}
 
 	private void onSuccess() {
-		LoreLocks.instance.ExecuteSuccessEvents(this);
+		LoreLocks.instance.executeSuccessEvents(this);
 		
 	}
 
