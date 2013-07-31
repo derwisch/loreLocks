@@ -270,11 +270,13 @@ public class LoreLocksListener implements Listener {
     			if (event.getInventory().getItem(0) != null)
     				loc.getWorld().dropItem(loc, event.getInventory().getItem(0));
     			event.getInventory().setItem(0, lock);	
+    			LoreLocks.instance.HiddenInventoryLocks.remove(loc);
     		}
     		if (trap != null) {
     			if (event.getInventory().getItem(1) != null)
     				loc.getWorld().dropItem(loc, event.getInventory().getItem(1));
     			event.getInventory().setItem(1, trap);	
+    			LoreLocks.instance.HiddenInventoryTraps.remove(loc);
     		}
     	}
     }
