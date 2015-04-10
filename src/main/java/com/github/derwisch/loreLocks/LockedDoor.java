@@ -128,7 +128,7 @@ public class LockedDoor {
     }
     
     public static boolean isValid(Material material) {
-        return material == Material.IRON_DOOR_BLOCK || material == Material.WOODEN_DOOR || material == Material.FENCE_GATE;
+        return material == Material.IRON_DOOR_BLOCK || material == Material.WOODEN_DOOR || material == Material.SPRUCE_DOOR || material == Material.BIRCH_DOOR || material == Material.JUNGLE_DOOR || material == Material.ACACIA_DOOR || material == Material.DARK_OAK_DOOR || material == Material.FENCE_GATE || material == Material.SPRUCE_FENCE_GATE || material == Material.BIRCH_FENCE_GATE || material == Material.JUNGLE_FENCE_GATE || material == Material.DARK_OAK_FENCE_GATE || material == Material.ACACIA_FENCE_GATE;
     }
     
     public static Block getBottomDoorBlock(Location location) {
